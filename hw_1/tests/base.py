@@ -3,8 +3,10 @@ from selenium.common.exceptions import StaleElementReferenceException, ElementCl
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from data import *
-from ui.locators.base_locators import *
+# from data import LOGIN_EMAIL, LOGIN_PASSWORD
+
+from ui.locators.base_locators import BASE_ENTER_LOCATOR, BASE_LOGIN_LOCATOR, BASE_PASSWORD_LOCATOR, BASE_AUTH_LOCATOR, \
+    BASE_USER_INFO_LOCATOR, BASE_LOGOUT_LOCATOR
 
 CLICK_RETRY = 5
 BASE_TIMEOUT = 5
@@ -19,15 +21,15 @@ class BaseCase:
         self.driver = driver
         self.config = config
 
-    def authorize(self):
+    def authorize(self, login=LOGIN_EMAIL, password=LOGIN_PASSWORD):
         self.click(BASE_ENTER_LOCATOR, 5)
-        self.write(BASE_LOGIN_LOCATOR, LOGIN_EMAIL)
-        self.write(BASE_PASSWORD_LOCATOR, LOGIN_PASSWORD)
+        self.write(BASE_LOGIN_LOCATOR, login)
+        self.write(BASE_PASSWORD_LOCATOR, password)
         self.click(BASE_AUTH_LOCATOR, 5)
 
     def logout(self):
-        self.click(BASE_USER_INFO_LOCATOR, 5)
-        self.click(BASE_LOGOUT_LOCATOR, 5)
+        self.click(BASE_USER_INFO_LOCATOR, 6)
+        self.click(BASE_LOGOUT_LOCATOR, 6)
 
     def wait(self, timeout):
         return WebDriverWait(self.driver, timeout=timeout)

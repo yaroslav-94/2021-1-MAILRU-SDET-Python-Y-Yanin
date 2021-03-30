@@ -2,11 +2,14 @@ import pytest
 import string
 import random
 
-from hw_1.tests.base import BaseCase
-from hw_1.ui.locators.balance_locators import *
-from hw_1.ui.locators.base_locators import *
-from ui.locators.profile_locators import *
-from ui.locators.settings_locators import *
+from tests.base import BaseCase
+from ui.locators.balance_locators import BALANCE_LOCATOR, BALANCE_ADD_MONEY_LOCATOR, \
+    BALANCE_AUTO_ADD_MONEY_LOCATOR, BALANCE_OPERATION_LOCATOR
+from ui.locators.base_locators import BASE_ERROR, BASE_ERROR_MSG
+from ui.locators.profile_locators import PROFILE_INFO_LOCATOR, PROFILE_FIO_LOCATOR, PROFILE_PHONE_LOCATOR, \
+    PROFILE_EMAIL_LOCATOR, PROFILE_SAVE_LOCATOR
+from ui.locators.settings_locators import SETTING_LOCATOR, SETTING_APP_LOCATOR, SETTING_CONVERSION_LOCATOR, \
+    SETTING_LIST_FEED_LOCATOR, SETTING_TRANSACTIONS_LOCATOR
 
 
 class TestOne(BaseCase):
@@ -14,24 +17,24 @@ class TestOne(BaseCase):
     FIO = ''.join(random.choices(string.ascii_letters, k=10))
     PHONE = str(random.randint(10_000_000_000, 100_000_000_000))
     MAIL = ''.join(random.choices(string.ascii_letters, k=10) + ['@'] + random.choices(string.ascii_letters, k=5) + [".ru"])
+    RANDOM_PASSWORD = ''.join(random.choices(string.ascii_letters, k=10)) + str(random.randint(0, 10_000_000_000))
 
     @pytest.mark.UI
     def test_login(self):
-        self.authorize()
+        self.authorize(login=self.MAIL, password=self.RANDOM_PASSWORD)
 
-        assert self.driver.current_url == "https://target.my.com/dashboard"
-        self.click(BALANCE_LOCATOR, 5)
-
-        self.logout()
+        assert self.find(BASE_ERROR, timeout=5)
+        assert self.find(BASE_ERROR_MSG, timeout=5)
 
     @pytest.mark.UI
     def test_logout(self):
         self.authorize()
 
-        self.click(BALANCE_LOCATOR, 5)
+        assert self.driver.current_url == "https://target.my.com/dashboard"
 
         self.logout()
-        assert self.find(BASE_ENTER_LOCATOR)
+
+        assert self.driver.find_element_by_xpath("//div[text()='Войти']")
         assert self.driver.current_url == "https://target.my.com/"
 
     @pytest.mark.UI

@@ -23,5 +23,7 @@ def driver(config):
     browser.implicitly_wait(15)
     browser.get(url)
     browser.set_window_size(1400, 1000)
+
     yield browser
+
     browser.quit()
