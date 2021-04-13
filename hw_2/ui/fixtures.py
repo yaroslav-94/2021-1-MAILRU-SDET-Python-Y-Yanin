@@ -22,7 +22,7 @@ def dashboard_page(driver, login_page, user_login=LOGIN_EMAIL, user_password=LOG
 def driver(config, test_dir):
     url = config['url']
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--window-size=1920,1080")
 
     manager = ChromeDriverManager(version='latest')
