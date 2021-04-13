@@ -4,29 +4,29 @@ import pytest
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-
-from hw_2.ui.pages.base_page import BasePage
-from hw_2.ui.pages.company_page import CompanyPage
-
-
-@pytest.fixture
-def base_page(driver):
-    return BasePage(driver=driver)
+from ui.data_hw2 import LOGIN_EMAIL, LOGIN_PASSWORD
+from ui.pages.login_page import LoginPage
 
 
-@pytest.fixture
-def company_page(driver):
-    return CompanyPage(driver=driver)
+@pytest.fixture(scope='function')
+def login_page(driver):
+    return LoginPage(driver=driver)
+
+
+@pytest.fixture(scope='function')
+def dashboard_page(driver, login_page, user_login=LOGIN_EMAIL, user_password=LOGIN_PASSWORD):
+    return login_page.login(user_login=user_login, user_password=user_password)
 
 
 @pytest.fixture(scope='function')
 def driver(config, test_dir):
     url = config['url']
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
+    options.add_argument("--window-size=1920,1080")
 
     manager = ChromeDriverManager(version='latest')
-    browser = webdriver.Chrome(executable_path=manager.install())
+    browser = webdriver.Chrome(executable_path=manager.install(), options=options)
     browser.get(url)
     browser.implicitly_wait(15)
     browser.maximize_window()

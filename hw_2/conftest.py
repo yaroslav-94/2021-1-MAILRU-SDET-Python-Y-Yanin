@@ -2,7 +2,7 @@ import logging
 import shutil
 import sys
 
-from hw_2.ui.fixtures import *
+from ui.fixtures import *
 
 
 def pytest_addoption(parser):
@@ -28,12 +28,11 @@ def pytest_configure(config):
     else:
         base_test_dir = '/tmp/tests'
 
-    if not hasattr(config, 'workerinput'):  # execute only once on main worker
+    if not hasattr(config, 'workerinput'):
         if os.path.exists(base_test_dir):
             shutil.rmtree(base_test_dir)
         os.makedirs(base_test_dir)
 
-    # save to config for all workers
     config.base_test_dir = base_test_dir
 
 
