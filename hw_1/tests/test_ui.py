@@ -31,6 +31,7 @@ class TestOne(BaseCase):
         self.authorize()
 
         assert self.driver.current_url == "https://target.my.com/dashboard"
+        assert self.driver.find_element_by_xpath("//div[text()='Создать кампанию']")
 
         self.logout()
 

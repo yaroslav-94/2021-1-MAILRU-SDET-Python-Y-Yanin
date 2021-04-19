@@ -3,8 +3,7 @@ from selenium.common.exceptions import StaleElementReferenceException, ElementCl
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# from data import LOGIN_EMAIL, LOGIN_PASSWORD
-
+from data_hw1 import LOGIN_EMAIL, LOGIN_PASSWORD
 from ui.locators.base_locators import BASE_ENTER_LOCATOR, BASE_LOGIN_LOCATOR, BASE_PASSWORD_LOCATOR, BASE_AUTH_LOCATOR, \
     BASE_USER_INFO_LOCATOR, BASE_LOGOUT_LOCATOR
 
