@@ -1,20 +1,32 @@
 import logging
+import os
 import shutil
 import sys
+import allure
+import pytest
 
-from ui.fixtures import *
+from hw_3.api.client_base import ApiClient
+from hw_3.api.client_segment import ApiClientSegment
 
 
 def pytest_addoption(parser):
     parser.addoption('--url', default='https://target.my.com/')
-    parser.addoption('--debug_log', action='store_true')
+
+
+@pytest.fixture(scope='function')
+def api_client(config):
+    return ApiClient(config['url'])
+
+
+@pytest.fixture(scope="function")
+def segment_api(config):
+    return ApiClientSegment(config['url'])
 
 
 @pytest.fixture(scope='session')
 def config(request):
     url = request.config.getoption('--url')
-    debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'debug_log': debug_log}
+    return {'url': url}
 
 
 @pytest.fixture(scope='session')
@@ -28,11 +40,12 @@ def pytest_configure(config):
     else:
         base_test_dir = '/tmp/tests'
 
-    if not hasattr(config, 'workerinput'):
+    if not hasattr(config, 'workerinput'):  # execute only once on main worker
         if os.path.exists(base_test_dir):
             shutil.rmtree(base_test_dir)
         os.makedirs(base_test_dir)
 
+    # save to config for all workers
     config.base_test_dir = base_test_dir
 
 
@@ -49,7 +62,7 @@ def logger(test_dir, config):
     log_formatter = logging.Formatter('%(asctime)s - %(filename)-15s - %(levelname)-6s - %(message)s')
     log_file = os.path.join(test_dir, 'test.log')
 
-    log_level = logging.DEBUG if config['debug_log'] else logging.INFO
+    log_level = logging.DEBUG
 
     file_handler = logging.FileHandler(log_file, 'w')
     file_handler.setFormatter(log_formatter)
@@ -58,6 +71,7 @@ def logger(test_dir, config):
     log = logging.getLogger('test')
     log.propagate = False
     log.setLevel(log_level)
+    log.handlers.clear()
     log.addHandler(file_handler)
 
     yield log
