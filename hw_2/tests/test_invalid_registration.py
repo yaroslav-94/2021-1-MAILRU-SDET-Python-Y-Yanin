@@ -1,6 +1,5 @@
 import string
 import random
-
 import pytest
 from tests.base import BaseCase
 

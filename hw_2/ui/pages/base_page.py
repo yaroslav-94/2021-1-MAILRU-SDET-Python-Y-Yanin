@@ -56,7 +56,7 @@ class BasePage:
                 element = self.wait(timeout).until(EC.element_to_be_clickable(locator))
                 element.click()
                 return
-            except (StaleElementReferenceException, ElementClickInterceptedException):
+            except (StaleElementReferenceException, ElementClickInterceptedException, TimeoutException):
                 if i == CLICK_RETRY - 1:
                     raise
 

@@ -1,6 +1,8 @@
 import logging
 import os
 
+from selenium.webdriver.common.by import By
+
 from ui.locators.company_locators import CompanyLocators
 from ui.pages.base_page import BasePage
 
@@ -13,6 +15,21 @@ class CompanyPage(BasePage):
 
     def __init__(self, driver):
         super().__init__(driver)
+
+    def create_company(self, name="", url=""):
+        self.click(self.locators.COMPANY_MAIN_LOCATOR)
+        self.click(self.locators.COMPANY_CREATE_IN_LIST_LOCATOR)
+        self.click(self.locators.COMPANY_AIM_CREATING_LOCATOR)
+        self.write(locator=self.locators.COMPANY_AIM_URL_LOCATOR, text=url)
+        self.write(locator=self.locators.COMPANY_NAME_NEW_LOCATOR, text=name)
+        self.click(locator=self.locators.COMPANY_FORMAT_AD_LOCATOR)
+        self.upload_file()
+        self.click(locator=self.locators.COMPANY_CREATE_IN_LIST_LOCATOR)
+
+    def delete_company(self, name=""):
+        self.click(locator=(By.XPATH, self.locators.COMPANY_CHOOSE_IN_LIST_PATH.format(name)))
+        self.click(locator=self.locators.COMPANY_ACTIONS_LOCATOR)
+        self.click(locator=self.locators.COMPANY_DELETE_LOCATOR)
 
     def upload_file(self):
         elem = self.find(self.locators.COMPANY_UPLOAD_FILE_LOCATOR)

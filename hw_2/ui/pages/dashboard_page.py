@@ -39,5 +39,4 @@ class DashboardPage(BasePage):
 
     def go_to_auditory(self):
         self.click(locator=self.locators.DASHBOARD_AUDITORY_LOCATOR)
-        # self.find((By.XPATH, "//span[text()='Список сегментов']"))
         return AuditoryPage(driver=self.driver)
