@@ -1,5 +1,4 @@
 from hw_3.api.client_base import ApiClient
-from hw_3.utils.builder import Builder
 
 
 class NoSuchSegmentExist(Exception):
@@ -12,7 +11,6 @@ class ApiClientSegment(ApiClient):
         super().__init__(base_url)
 
         self.segment_id = None
-        self.segment_names = Builder().create_segment_name()
 
     def create_segment(self, name):
         location_segment = "api/v2/remarketing/segments.json?fields=relations__object_type,relations__object_id,relations__params,relations__params__score,relations__id,relations_count,id,name,pass_condition,created,campaign_ids,users,flags"

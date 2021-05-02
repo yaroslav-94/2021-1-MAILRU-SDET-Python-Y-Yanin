@@ -3,8 +3,6 @@ import pytest
 from hw_3.data_hw3 import LOGIN_EMAIL, LOGIN_PASSWORD
 from hw_3.utils.builder import Builder
 
-blog_id = 350
-
 
 class ApiBase:
     authorize = True
