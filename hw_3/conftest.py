@@ -7,6 +7,7 @@ import pytest
 
 from hw_3.api.client_base import ApiClient
 from hw_3.api.client_segment import ApiClientSegment
+from hw_3.utils.builder import Builder
 
 
 def pytest_addoption(parser):
@@ -16,6 +17,11 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='function')
 def api_client(config):
     return ApiClient(config['url'])
+
+
+@pytest.fixture(scope='function')
+def builder():
+    return Builder()
 
 
 @pytest.fixture(scope="function")
