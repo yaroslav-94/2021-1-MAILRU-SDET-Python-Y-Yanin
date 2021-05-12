@@ -1,0 +1,2 @@
+git fetch - получение всех изменений из репозитория
+git reset -soft origin/main - сброс плохих изменений и взять из код из ветки origin/main
