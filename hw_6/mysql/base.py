@@ -1,10 +1,15 @@
 import os
 import pytest
 
-from hw_6.builder.builder import MySQLBuilder
+from builder.builder import MySQLBuilder
 
 
 class MySQLBase:
+    sum_requests = 0
+    request_types = {}
+    class_data_top_ten = {}
+    class_data_top_five = {}
+    top_five_users = {}
 
     def prepare(self):
         pass

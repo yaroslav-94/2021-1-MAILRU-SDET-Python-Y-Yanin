@@ -1,5 +1,5 @@
-from hw_6.mysql.models import SumRequests, SumRequestsOnTypes, TopTenMostSendedRequests, TopFiveHavySendedRequests, \
-    TopFiveUsersWithServerErrors
+from mysql.models import (SumRequests, SumRequestsOnTypes, TopTenMostSendedRequests, TopFiveHavySendedRequests,
+                          TopFiveUsersWithServerErrors)
 
 
 class BadDataForAddingInMySQL(Exception):
