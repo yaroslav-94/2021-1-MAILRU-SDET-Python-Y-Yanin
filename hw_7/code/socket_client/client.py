@@ -1,7 +1,7 @@
 import json
 import socket
 
-import settings
+from hw_7.code import settings
 
 
 class ClientError(Exception):
@@ -54,9 +54,10 @@ class SocketClient:
     def post_add_user(self, name, surname):
 
         body = json.dumps({'name': f'{name}', 'surname': f'{surname}'})
-        headers = "POST /add_user HTTP/1.1\r\nHost: {host}\r\nContent-Length: {content_length}\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{body}\r\n\r\n"
+        head_list = "\r\n".join([f'Host: {self.host}:{self.port}', f'Content-Length: {len(body.encode())}',
+                                 'Content-Type: application/json', 'Connection: close'])
 
-        request = headers.format(content_length=len(body.encode()), host=str(self.host) + ":" + str(self.port), body=body)
+        request = f'POST /add_user HTTP/1.1\r\n{head_list}\r\n\r\n{body}\r\n\r\n'
         return self.__socket_client(request)
 
     def delete_user_by_name(self, name):

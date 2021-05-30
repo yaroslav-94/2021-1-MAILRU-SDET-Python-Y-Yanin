@@ -8,9 +8,9 @@ import pytest
 import requests
 from requests.exceptions import ConnectionError
 
-import settings
-from mock import flask_mock
-from socket_client.client import SocketClient
+from hw_7.code import settings
+from hw_7.code.mock import flask_mock
+from hw_7.code.socket_client.client import SocketClient
 
 repo_root = os.path.abspath(os.path.join(__file__, os.pardir))
 
@@ -108,6 +108,8 @@ def socket_client(config):
 
 def pytest_configure(config):
     if not hasattr(config, 'workerinput'):
+        if not os.path.exists(os.path.join(repo_root, 'tmp')):
+            os.makedirs(os.path.join(repo_root, 'tmp'))
         start_mock(config)
         start_stub(config)
         start_app(config)

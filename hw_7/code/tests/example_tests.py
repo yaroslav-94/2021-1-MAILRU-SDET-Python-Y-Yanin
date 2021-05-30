@@ -1,9 +1,10 @@
 import json
 import requests
 
-import settings
-from base.base import ApiBase
-from mock.flask_mock import SURNAME_DATA
+from hw_7.code import settings
+from hw_7.code.base.base import ApiBase
+from hw_7.code.mock.flask_mock import SURNAME_DATA
+from hw_7.code.user_generator.generator import Generator
 
 url = f'http://{settings.APP_HOST}:{settings.APP_PORT}'
 
@@ -60,53 +61,67 @@ class Test_Lection(ApiBase):
 class Test_HW(ApiBase):
 
     def test_socket_client_get(self):
-        SURNAME_DATA['David'] = ('Storl', 1)
-        resp = self.socket_client.get_user_info(name='David')
-        assert resp[0].count("200") == 1
-        assert json.loads(resp[-1])[0] == 'Storl'
+        user_name, user_surname = Generator().create_user_name()
+        SURNAME_DATA[user_name] = (user_surname, 1)
+
+        resp = self.socket_client.get_user_info(name=user_name)
+        assert resp[0].count('200') == 1
+        assert json.loads(resp[-1])[0] == user_surname
 
     def test_socket_client_post(self):
-        resp = self.socket_client.post_add_user(name='Yury', surname='Borzakovsky')
+        user_name, user_surname = Generator().create_user_name()
+
+        resp = self.socket_client.post_add_user(name=user_name, surname=user_surname)
         assert resp[0].count("201") == 1
 
-        resp1 = self.socket_client.get_user_info(name='Yury')
-        assert resp1[0].count("200") == 1
-        assert json.loads(resp1[-1])[0] == "Borzakovsky"
+        resp1 = self.socket_client.get_user_info(name=user_name)
+        assert resp1[0].count('200') == 1
+        assert json.loads(resp1[-1])[0] == user_surname
 
     def test_socket_client_delete(self):
-        SURNAME_DATA['Wayde'] = ('Niekerk', 1)
-        resp = self.socket_client.delete_user_by_name(name='Wayde')
-        assert resp[0].count("200") == 1
+        user_name, user_surname = Generator().create_user_name()
+        SURNAME_DATA[user_name] = (user_surname, 1)
 
-        resp1 = self.socket_client.get_user_info(name='Wayde')
-        assert resp1[0].count("404") == 1
+        resp = self.socket_client.delete_user_by_name(name=user_name)
+        assert resp[0].count('200') == 1
+
+        resp1 = self.socket_client.get_user_info(name=user_name)
+        assert resp1[0].count('404') == 1
 
     def test_socket_client_put(self):
-        SURNAME_DATA['Dafne'] = ('Ship', 1)
-        resp = self.socket_client.put_user_new_surname(name='Dafne', surname='Schippers')
-        assert resp[0].count("200") == 1
+        user_name, user_surname = Generator().create_user_name()
+        user_surname_new = Generator().create_user_name()[1]
+        SURNAME_DATA[user_name] = (user_surname, 1)
 
-        resp1 = self.socket_client.get_user_info(name='Dafne')
-        assert json.loads(resp1[-1]) == 'Schippers'
-        assert resp1[0].count("200") == 1
+        resp = self.socket_client.put_user_new_surname(name=user_name, surname=user_surname_new)
+        assert resp[0].count('200') == 1
+
+        resp1 = self.socket_client.get_user_info(name=user_name)
+        assert json.loads(resp1[-1]) == user_surname_new
+        assert resp1[0].count('200') == 1
 
     def test_flask_mock_delete(self):
-        SURNAME_DATA['David'] = ('Storl', 1)
-        SURNAME_DATA['Justin'] = ('Gutlin', 2)
+        user_name1, user_surname1 = Generator().create_user_name()
+        user_name2, user_surname2 = Generator().create_user_name()
 
-        resp = self.socket_client.delete_user_by_name(name='Justin')
-        assert resp[0].count("200") == 1
+        SURNAME_DATA[user_name1] = (user_surname1, 1)
+        SURNAME_DATA[user_name2] = (user_surname2, 2)
 
-        resp1 = self.socket_client.get_user_info(name='David')
-        assert json.loads(resp1[-1])[0] == 'Storl'
+        resp = self.socket_client.delete_user_by_name(name=user_name2)
+        assert resp[0].count('200') == 1
+
+        resp1 = self.socket_client.get_user_info(name=user_name1)
+        assert json.loads(resp1[-1])[0] == user_surname1
         assert resp1[0].count('200') == 1
 
     def test_flask_mock_put(self):
-        SURNAME_DATA['Asafa'] = ('Pow', 1)
+        user_name, user_surname = Generator().create_user_name()
+        user_surname_new = Generator().create_user_name()[1]
+        SURNAME_DATA[user_name] = (user_surname, 1)
 
-        resp = self.socket_client.put_user_new_surname(name='Asafa', surname='Powell')
+        resp = self.socket_client.put_user_new_surname(name=user_name, surname=user_surname_new)
         assert resp[0].count('200') == 1
 
-        resp1 = self.socket_client.get_user_info(name='Asafa')
-        assert (resp1[-1].count('Powell')) == 1
+        resp1 = self.socket_client.get_user_info(name=user_name)
+        assert (resp1[-1].count(user_surname_new)) == 1
         assert resp1[0].count('200') == 1

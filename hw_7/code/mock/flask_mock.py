@@ -2,8 +2,7 @@ import json
 import threading
 
 from flask import Flask, jsonify, request
-
-import settings
+from hw_7.code import settings
 
 app = Flask(__name__)
 
@@ -48,7 +47,6 @@ class RoutesForMock:
     @staticmethod
     @app.route('/delete_by_surname/<name>', methods=['DELETE'])
     def delete_user_by_name(name):
-
         if SURNAME_DATA.get(name):
             SURNAME_DATA.pop(name)
             return jsonify(f"User '{name}' was deleted!"), 200
