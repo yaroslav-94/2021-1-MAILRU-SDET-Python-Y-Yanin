@@ -2,7 +2,8 @@ import json
 import threading
 
 from flask import Flask, jsonify, request
-from hw_7.code import settings
+
+from code_hw import settings_data
 
 app = Flask(__name__)
 
@@ -66,8 +67,8 @@ class RoutesForMock:
 class ActionWithMock:
 
     def __init__(self):
-        self.host = settings.MOCK_HOST
-        self.port = settings.MOCK_PORT
+        self.host = settings_data.MOCK_HOST
+        self.port = settings_data.MOCK_PORT
 
     def run_mock(self):
         server = threading.Thread(target=app.run, kwargs={

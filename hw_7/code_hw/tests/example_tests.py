@@ -1,12 +1,12 @@
 import json
 import requests
 
-from hw_7.code import settings
-from hw_7.code.base.base import ApiBase
-from hw_7.code.mock.flask_mock import SURNAME_DATA
-from hw_7.code.user_generator.generator import Generator
+from code_hw import settings_data
+from code_hw.base.base import ApiBase
+from code_hw.mock.flask_mock import SURNAME_DATA
+from code_hw.user_generator.generator import Generator
 
-url = f'http://{settings.APP_HOST}:{settings.APP_PORT}'
+url = f'http://{settings_data.APP_HOST}:{settings_data.APP_PORT}'
 
 
 class Test_Lection(ApiBase):

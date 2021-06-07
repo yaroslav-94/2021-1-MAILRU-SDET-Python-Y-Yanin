@@ -1,7 +1,7 @@
 import json
 import socket
 
-from hw_7.code import settings
+from code_hw import settings_data
 
 
 class ClientError(Exception):
@@ -11,8 +11,8 @@ class ClientError(Exception):
 class SocketClient:
 
     def __init__(self):
-        self.port = int(settings.MOCK_PORT)
-        self.host = settings.MOCK_HOST
+        self.port = int(settings_data.MOCK_PORT)
+        self.host = settings_data.MOCK_HOST
 
     def __socket_client(self, request):
         data = {}
