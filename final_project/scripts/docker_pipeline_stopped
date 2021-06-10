@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER = "/usr/local/bin"
+    }
+
+    stages {
+
+        stage('Example'){
+            steps {
+                withEnv(["PATH+EXTRA=$DOCKER"]) {
+                    script {
+                        println("STOP APP")
+                        sh "docker container stop 754cb20f5a78"
+
+                        println("STOP DATA BASE")
+                        sh "docker container stop c5e8b5e3d37d"
+
+                        println("STOP VK mock")
+                        sh "docker container stop e6ba10030717"
+                    }
+                }
+            }
+        }
+    }
+}

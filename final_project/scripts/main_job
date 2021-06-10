@@ -1,0 +1,72 @@
+def job_params = createParamsJob(PROJECT)
+def job_allure_params
+def job_allure
+
+currentBuild.displayName = "#${PROJECT}: ${BUILD_NUMBER}"
+
+
+def createParamsJob(value) {
+    if ( value.equals('mail_final_project') ) {
+        return create_params_mail_final()
+    }
+}
+
+
+def create_params_mail_final() {
+    def mail_final_project = [:]
+
+    mail_final_project.put('TEST_TYPE', TEST_TYPE)
+    mail_final_project.put('NUMBER_RUNNERS', NUMBER_RUNNERS)
+    mail_final_project.put('ALLURE_PATH_JOB', "/start_tests/")
+
+    return mail_final_project
+}
+
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clear directory'){
+            steps{
+                script{
+                    deleteDir()
+                }
+            }
+        }
+
+        stage('Start Docker containers') {
+            steps {
+                script {
+                    build 'docker_pipeline_starter'
+                }
+            }
+        }
+
+        stage('Start job with tests') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    script {
+                        if (job_params != null) {
+                            job_allure = build job: job_params.get('ALLURE_PATH_JOB'),
+                                    parameters: [
+                                            [$class: 'StringParameterValue', name: 'TEST_TYPE',   value: job_params.get('TEST_TYPE') ],
+                                            [$class: 'StringParameterValue', name: 'NUMBER_RUNNERS',   value: job_params.get('NUMBER_RUNNERS') ]
+                                    ]
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Stopped Docker containers') {
+            steps {
+                script {
+                    build 'docker_pipeline_stopped'
+                }
+            }
+        }
+
+    }
+}

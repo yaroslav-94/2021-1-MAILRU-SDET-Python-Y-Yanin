@@ -1,0 +1,95 @@
+import java.text.SimpleDateFormat
+
+def getDateNow() {
+    def sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000'Z'")
+    return sdf.format(new Date())
+}
+
+currentBuild.displayName = """#MAIL-FINAL: ${TEST_TYPE}: ${getDateNow()}"""
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clear directory'){
+            steps{
+                script{
+                    deleteDir()
+                }
+            }
+        }
+
+        stage('Download project from GitHub'){
+            steps {
+                script {
+                    checkout ([
+                        $class: 'GitSCM',
+                        branches: [[name: 'master']],
+                        userRemoteConfigs: [[
+                            credentialsId: 'project_github',
+                            url: "https://github.com/yaroslav-94/mail_final_project.git"
+                            ]]
+                ])
+                }
+            }
+        }
+
+        stage('Install libraries'){
+            steps {
+                script {
+                    println("INSTALLING PYTEST")
+                    sh "pip3 install pytest --user"
+
+                    println("Install requests")
+                    sh "pip3 install requests --user"
+
+                    println("Install sqlalchemy")
+                    sh "pip3 install sqlalchemy --user"
+
+                    println("Install pymysql")
+                    sh "pip3 install pymysql --user"
+
+                    println("Install allure-pytest")
+                    sh "pip3 install allure-pytest --user"
+
+                    println("Install selenium")
+                    sh "pip3 install selenium --user"
+
+                    println("Install webdriver_manager")
+                    sh "pip3 install webdriver_manager --user"
+
+                    println("Install cryptography")
+                    sh "pip3 install cryptography --user"
+                }
+            }
+        }
+
+        stage('Start tests') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    script {
+                        dir ("""${WORKSPACE}/code""") {
+                            if (TEST_TYPE.equals('ALL')) {
+                                sh """python3 -m pytest -n ${NUMBER_RUNNERS} --alluredir=./report"""
+                            }
+                            else {
+                                sh """python3 -m pytest -n ${NUMBER_RUNNERS} -m ${TEST_TYPE} --alluredir=./report"""
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            dir("""${WORKSPACE}/code""") {
+                allure (commandline: 'allure',
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'report']])
+            }
+        }
+    }
+}

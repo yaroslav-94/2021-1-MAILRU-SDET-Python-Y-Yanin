@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER = "/usr/local/bin"
+    }
+
+    stages {
+
+        stage('Start containers'){
+            steps {
+                withEnv(["PATH+EXTRA=$DOCKER"]) {
+                    script {
+                        println("START VK MOCK")
+                        sh "docker container start e6ba10030717"
+
+                        println("START DATA BASE")
+                        sh "docker container start c5e8b5e3d37d"
+
+                        println("START APP")
+                        sh "docker container start 754cb20f5a78"
+                    }
+                }
+            }
+        }
+    }
+}
